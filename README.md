@@ -43,6 +43,31 @@ The sample pins Next.js **16.4.4**, React **19.3.1**, and React DOM **19.3.1**.
 Keep the lockfile and use `npm ci`; setup does not require dependency upgrades.
 The hosted observations below apply to Next.js 16.3.7, not these updated pins.
 
+### Dependency maintenance
+
+The lockfile includes patched `source-map-js` (1.2.2) and Zod (4.6.7),
+within the ranges already allowed by PostCSS and the React Hooks lint plugin.
+Three scoped npm overrides select minimatch 11.0.1 for ESLint,
+`@eslint/config-array`, and `@typescript-eslint/typescript-estree` to address
+GHSA-g3hv-75wg-m249. Their declared minimatch 10 ranges do not admit the fix.
+These consumers use the retained `minimatch()` or `Minimatch.match()` APIs,
+including partial directory matching; they do not use the removed regular
+expression APIs. The overrides leave the separate minimatch 3 tree unchanged.
+Revisit them when these tooling packages accept the patched major directly.
+
+Check both the runtime and complete dependency trees after updates:
+
+```sh
+npm audit --omit=dev
+npm audit
+npm run lint
+npm run build
+npm test
+```
+
+Audit results are dependency advisory findings, not proof of runtime
+exploitability. Local checks do not qualify a new hosted deployment.
+
 ## Run locally
 
 Fork
