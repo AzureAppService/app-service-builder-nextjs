@@ -10,9 +10,12 @@ No database, external service, or parent workspace is required.
 and testing, not as a production application template.** This repository's
 startup manifest explicitly binds the standalone server to `0.0.0.0`.
 Earlier inferred startup completed its build but timed out during health checks.
-The updated manifest must be deployed and verified in your authorized preview
-environment. Local checks do not establish cloud deployment success or
-regional availability.
+The production build also copies public assets and static chunks into the
+standalone server output. A hosted check of the earlier build served framework
+routes but returned 404 for `/shape.png` and 400 for its optimized image.
+Hosted qualification now demonstrates the bounded standalone behavior below,
+not every Next.js mode or location. Browser Server Actions remain blocked by
+the hosted request-origin boundary.
 
 ## Repository structure
 
@@ -63,20 +66,23 @@ From the repository root:
 ```sh
 npm run lint
 npm run build
-npm run prepare:standalone
 npm test
 ```
 
 `next.config.mjs` retains `output: "standalone"`. Next.js generates
 `.next/standalone/server.js`, but does not copy `public/` or `.next/static/`
-there by default. The preparation command copies both into the standalone
-directory so that local validation exercises the actual generated server,
-including static chunks and optimized images.
+there by default. `npm run build` runs the preparation command after `next build`
+to copy both into the standalone directory. This is required in the hosted
+build as well as local validation: the image optimizer needs the source image
+inside the compute artifact, not only in a separate static output.
+`npm run prepare:standalone` remains available to restage assets manually.
 
 The tests verify the exact startup manifest, prepared output, Server Action
 validation (including the 40-character boundary), and live standalone HTTP
 behavior. They check runtime SSR, JSON handlers, static assets, optimized
-images, proxy headers, redirects, and not-found status codes.
+images, proxy headers, redirects, and not-found status codes. The real local
+Server Action POST succeeds with matching request origin/forwarded host and
+rejects a mismatch, preserving Next.js's CSRF protection.
 The standalone integration server uses an available port and is stopped
 after the test. Its `HOSTNAME` is explicitly `0.0.0.0`, matching the manifest.
 GitHub Actions runs lint, build, preparation, and tests on Linux and Windows.
@@ -118,7 +124,9 @@ For a different local port or a deployed URL:
 pwsh -NoProfile -File .\scripts\verify.ps1 -BaseUrl https://your-app-hostname
 ```
 
-The HTTP script does not execute browser JavaScript. Also open `/server-action`,
+The HTTP script does not execute browser JavaScript or supply a hosted visitor
+session. Use the app's required sign-in rather than bypassing it.
+For local browser validation, open `/server-action`,
 enter a non-sensitive test name, and submit the form. Expect
 `Server action received: <your value>`. Check client navigation, direct product
 links, refreshes, the displayed image, and the custom not-found page.
@@ -151,6 +159,53 @@ The form and JSON handlers are public and unauthenticated. The Server Action
 returns a demonstration greeting and does not persist data. It trims input
 and accepts names from 1 to 40 characters. Do not submit sensitive information.
 
+## Hosted qualification and limitations
+
+On November 5, 2026, an isolated Builder app in `westus2` successfully activated
+Next.js **16.3.7** standalone output with this manifest. The build used Node.js
+**24.20.0**; `/api/version` reported hosted Node.js **24.22.1**.
+The tested source was commit
+`0bbf38090f76c64dba443e5bce4b90e02984ec20`, uploaded as a source ZIP with SHA-256
+`32413b61aa872432646c6f122db4f4ba2c974035a86eb996ffb9515b0f120b74`.
+Builder built and activated version `ver_20261105_829e14ea70fa` through deployment
+`dep_20261105_829e14ea70fa`. The ZIP, not a GitHub commit identity, is the source
+revision recorded by the service.
+
+| Hosted behavior | Observed result |
+|---|---|
+| Prerendered landing page and JS/CSS chunks | HTTP 200; browser renders the UI |
+| Request-time SSR | HTTP 200 with different timestamps on successive requests |
+| Product segments and direct deep links | Valid products return 200; unknown products return the custom 404 |
+| JSON health and version handlers | HTTP 200 with the expected application identity |
+| `proxy.js` | Expected `x-builder-apps-proxy: active` header |
+| Public image and `/_next/image` | HTTP 200; PNG and negotiated WebP decode successfully after the build fix |
+| Client navigation | App Router navigation preserves the browser document |
+| Redirect and missing page | `/legacy` reaches `/`; missing routes return the custom 404 |
+| Browser Server Action | POST returns HTTP 500, Next.js digest `1060516640@E80` |
+
+`E80` identifies Next.js's request-origin/host validation failure, not a failure
+inside the greeting function. The platform proxy must preserve the public host
+consistently with the browser's `Origin` for same-origin Server Actions.
+Do not remove the origin check or add a shared-domain wildcard to hide it.
+The same action succeeds against the local standalone server with matching
+headers. Hosted Server Actions are **not qualified** by this sample.
+
+The hosted app required the preview environment's visitor sign-in. Browser
+checks used that session; an anonymous health request returned HTTP 401 at the
+visitor boundary. This does not change the app source's own lack of authentication.
+GitHub source connection was separately blocked by missing GitHub App access
+to the canonical repository; ZIP deployment did not verify GitHub integration
+or automatic deployment on push.
+
+These observations establish a running Node.js standalone app with the tested
+App Router routes and assets, not complete Next.js feature parity.
+Edge Runtime routes, static export, ISR/revalidation, streaming behavior,
+custom servers, other versions/regions, and production workloads were not
+qualified. Consult the current
+[feature availability](https://builder.appservice.azure.com/docs/resources/feature-status/)
+and [runtime guidance](https://builder.appservice.azure.com/docs/reference/runtimes/);
+this bounded experiment does not override the product's support policy.
+
 ## Deployment contract
 
 The root `builder.yaml` contains:
@@ -178,8 +233,11 @@ adapter, Node.js platform/runtime, build command, and static/compute outputs.
 `next.config.mjs`. The repository does not add a broad Node.js engine range:
 an earlier provider resolution selected unsupported Node.js major version 20.
 
-The local preparation helper copies assets for standalone verification.
-It does not replace Builder's framework-specific artifact assembly.
+The production build invokes the preparation helper so Builder's standalone
+compute artifact includes its public image and static chunks.
+It complements Builder's framework-specific artifact assembly; publishing
+assets as a separate static output alone does not make them available to
+the server-side image optimizer.
 Deploy the committed source and manifest, not `node_modules/` or `.next/`.
 
 ## Deploy your fork through Builder Portal

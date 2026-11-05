@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
+import { createRequire } from "node:module";
 import { createServer } from "node:net";
 import test from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { stripVTControlCharacters } from "node:util";
 import { submitGreeting } from "./src/app/actions.js";
+
+const { encodeReply } = createRequire(import.meta.url)("next/dist/compiled/react-server-dom-turbopack/client.node.js");
 
 test("manifest binds the standalone server to all interfaces on component port 3000", async () => {
   const manifest = await readFile(new URL("./builder.yaml", import.meta.url), "utf8");
@@ -20,6 +23,8 @@ test("manifest binds the standalone server to all interfaces on component port 3
 });
 
 test("standalone output contains the generated server and public image", async () => {
+  const { scripts } = JSON.parse(await readFile(new URL("./package.json", import.meta.url), "utf8"));
+  assert.equal(scripts.build, "next build && npm run prepare:standalone");
   await access(new URL("./.next/standalone/server.js", import.meta.url));
   assert.deepEqual(
     await readFile(new URL("./.next/standalone/public/shape.png", import.meta.url)),
@@ -158,4 +163,32 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
   const redirect = await fetch(new URL("/legacy", origin), { redirect: "manual" });
   assert.equal(redirect.status, 307);
   assert.equal(redirect.headers.get("location"), "/");
+
+  const actionManifest = JSON.parse(await readFile(new URL("./.next/server/server-reference-manifest.json", import.meta.url), "utf8"));
+  const actionId = Object.entries(actionManifest.node)
+    .find(([, action]) => action.exportedName === "submitGreeting")?.[0];
+  assert.ok(actionId, "the production build must include the greeting Server Action");
+  for (const [forwardedHost, expectedStatus] of [
+    [new URL(origin).host, 200],
+    ["internal.invalid:3000", 500],
+  ]) {
+    const form = new FormData();
+    form.set("name", "Standalone HTTP");
+    const response = await fetch(new URL("/server-action", origin), {
+      method: "POST",
+      headers: {
+        Origin: origin,
+        "X-Forwarded-Host": forwardedHost,
+        "Next-Action": actionId,
+        Accept: "text/x-component",
+      },
+      body: await encodeReply([{}, form]),
+    });
+    assert.equal(response.status, expectedStatus, forwardedHost);
+    const result = await response.text();
+    assert.ok(
+      result.includes(expectedStatus === 200 ? "Server action received: Standalone HTTP" : "@E80"),
+      result,
+    );
+  }
 });
