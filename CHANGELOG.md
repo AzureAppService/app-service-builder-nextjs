@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Update vulnerable source-map-js and Zod transitives within their existing
+  ranges, and scope minimatch 11.0.1 overrides to its three affected lint-tool
+  consumers without changing the Next.js or React pins.
 - Run standalone asset preparation as part of the production build, not only
   local test setup, so the hosted server can serve public files and optimize
   the sample image.
