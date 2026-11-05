@@ -1,0 +1,160 @@
+:root {
+  --background: #f4f6fb;
+  --foreground: #172033;
+  --accent: #4d46b8;
+  --accent-dark: #37318f;
+  --border: #dce2ef;
+}
+
+body {
+  margin: 0;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+main {
+  width: min(46rem, calc(100% - 3rem));
+  margin: 4rem auto;
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 1rem 3rem rgb(23 32 51 / 8%);
+}
+
+h1 {
+  margin-top: 0;
+}
+
+h2 {
+  margin-top: 2rem;
+}
+
+a {
+  color: var(--accent);
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.button,
+button {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+  border-radius: 0.5rem;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover,
+button:hover {
+  background: var(--accent-dark);
+}
+
+.button:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #9b97ef;
+  outline-offset: 2px;
+}
+
+.feature-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 1.25rem;
+  background: #f8f8ff;
+  border: 1px solid #e3e1fb;
+  border-radius: 0.75rem;
+}
+
+.feature-card h2 {
+  margin: 0;
+}
+
+dl {
+  display: grid;
+  gap: 0.75rem;
+}
+
+dl div {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1rem;
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+  max-width: 26rem;
+  margin: 2rem 0;
+}
+
+label {
+  font-weight: 700;
+}
+
+input {
+  padding: 0.75rem;
+  border: 1px solid #aeb8ce;
+  border-radius: 0.5rem;
+  font: inherit;
+}
+
+.result {
+  padding: 1rem;
+  background: #eef8f0;
+  border-left: 0.25rem solid #348d4c;
+}
+
+@media (max-width: 38rem) {
+  main {
+    width: min(100% - 1.5rem, 46rem);
+    margin: 1rem auto;
+    padding: 1.25rem;
+  }
+
+  .feature-card {
+    grid-template-columns: 1fr;
+  }
+
+  dl div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
