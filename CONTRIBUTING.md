@@ -35,7 +35,6 @@ follow [the security policy](SECURITY.md) instead of opening a public issue.
 ```sh
 npm run lint
 npm run build
-npm run prepare:standalone
 npm test
 ```
 

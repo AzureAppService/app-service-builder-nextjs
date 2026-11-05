@@ -10,9 +10,10 @@ No database, external service, or parent workspace is required.
 and testing, not as a production application template.** This repository's
 startup manifest explicitly binds the standalone server to `0.0.0.0`.
 Earlier inferred startup completed its build but timed out during health checks.
-The updated manifest must be deployed and verified in your authorized preview
-environment. Local checks do not establish cloud deployment success or
-regional availability.
+The production build also copies public assets and static chunks into the
+standalone server output. A hosted check of the earlier build served framework
+routes but returned 404 for `/shape.png` and 400 for its optimized image.
+Local checks do not establish cloud deployment success or regional availability.
 
 ## Repository structure
 
@@ -63,15 +64,16 @@ From the repository root:
 ```sh
 npm run lint
 npm run build
-npm run prepare:standalone
 npm test
 ```
 
 `next.config.mjs` retains `output: "standalone"`. Next.js generates
 `.next/standalone/server.js`, but does not copy `public/` or `.next/static/`
-there by default. The preparation command copies both into the standalone
-directory so that local validation exercises the actual generated server,
-including static chunks and optimized images.
+there by default. `npm run build` runs the preparation command after `next build`
+to copy both into the standalone directory. This is required in the hosted
+build as well as local validation: the image optimizer needs the source image
+inside the compute artifact, not only in a separate static output.
+`npm run prepare:standalone` remains available to restage assets manually.
 
 The tests verify the exact startup manifest, prepared output, Server Action
 validation (including the 40-character boundary), and live standalone HTTP
@@ -178,8 +180,11 @@ adapter, Node.js platform/runtime, build command, and static/compute outputs.
 `next.config.mjs`. The repository does not add a broad Node.js engine range:
 an earlier provider resolution selected unsupported Node.js major version 20.
 
-The local preparation helper copies assets for standalone verification.
-It does not replace Builder's framework-specific artifact assembly.
+The production build invokes the preparation helper so Builder's standalone
+compute artifact includes its public image and static chunks.
+It complements Builder's framework-specific artifact assembly; publishing
+assets as a separate static output alone does not make them available to
+the server-side image optimizer.
 Deploy the committed source and manifest, not `node_modules/` or `.next/`.
 
 ## Deploy your fork through Builder Portal

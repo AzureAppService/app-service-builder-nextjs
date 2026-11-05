@@ -20,6 +20,8 @@ test("manifest binds the standalone server to all interfaces on component port 3
 });
 
 test("standalone output contains the generated server and public image", async () => {
+  const { scripts } = JSON.parse(await readFile(new URL("./package.json", import.meta.url), "utf8"));
+  assert.equal(scripts.build, "next build && npm run prepare:standalone");
   await access(new URL("./.next/standalone/server.js", import.meta.url));
   assert.deepEqual(
     await readFile(new URL("./.next/standalone/public/shape.png", import.meta.url)),

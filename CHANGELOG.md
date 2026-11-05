@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Run standalone asset preparation as part of the production build, not only
+  local test setup, so the hosted server can serve public files and optimize
+  the sample image.
+- Make CI test the production build without a separate asset-preparation step.
+
 ## 1.0.0 - 2026-11-05
 
 - Prepare `app-service-builder-nextjs` for standalone publication.
