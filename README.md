@@ -39,8 +39,9 @@ standalone.test.mjs              Manifest, action, and standalone integration te
 - Optional: [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
   for the endpoint verification script.
 
-The sample pins Next.js **16.3.7**, React **19.2.8**, and React DOM **19.2.8**.
+The sample pins Next.js **16.4.4**, React **19.3.1**, and React DOM **19.3.1**.
 Keep the lockfile and use `npm ci`; setup does not require dependency upgrades.
+The hosted observations below apply to Next.js 16.3.7, not these updated pins.
 
 ## Run locally
 
@@ -83,6 +84,10 @@ behavior. They check runtime SSR, JSON handlers, static assets, optimized
 images, proxy headers, redirects, and not-found status codes. The real local
 Server Action POST succeeds with matching request origin/forwarded host and
 rejects a mismatch, preserving Next.js's CSRF protection.
+The test decodes the Flight action result and requires the server's explicit
+origin-mismatch abort diagnostic for rejection; an arbitrary HTTP 500 is not
+sufficient. Production error digests and internal error-code suffixes are not
+stable behavior contracts.
 The standalone integration server uses an available port and is stopped
 after the test. Its `HOSTNAME` is explicitly `0.0.0.0`, matching the manifest.
 GitHub Actions runs lint, build, preparation, and tests on Linux and Windows.

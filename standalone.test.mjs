@@ -8,7 +8,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { stripVTControlCharacters } from "node:util";
 import { submitGreeting } from "./src/app/actions.js";
 
-const { encodeReply } = createRequire(import.meta.url)("next/dist/compiled/react-server-dom-turbopack/client.node.js");
+const { createFromFetch, encodeReply } = createRequire(import.meta.url)("next/dist/compiled/react-server-dom-turbopack/client.node.js");
 
 test("manifest binds the standalone server to all interfaces on component port 3000", async () => {
   const manifest = await readFile(new URL("./builder.yaml", import.meta.url), "utf8");
@@ -74,6 +74,10 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
       RUNTIME_MARKER: "standalone-runtime-test",
     },
     stdio: ["ignore", "pipe", "pipe"],
+  });
+  let serverErrors = "";
+  server.stderr.on("data", (chunk) => {
+    serverErrors += stripVTControlCharacters(chunk.toString());
   });
   const closed = new Promise((resolve) => server.once("close", resolve));
   t.after(async () => {
@@ -172,6 +176,7 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
     [new URL(origin).host, 200],
     ["internal.invalid:3000", 500],
   ]) {
+    const errorOffset = serverErrors.length;
     const form = new FormData();
     form.set("name", "Standalone HTTP");
     const response = await fetch(new URL("/server-action", origin), {
@@ -185,10 +190,34 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
       body: await encodeReply([{}, form]),
     });
     assert.equal(response.status, expectedStatus, forwardedHost);
-    const result = await response.text();
-    assert.ok(
-      result.includes(expectedStatus === 200 ? "Server action received: Standalone HTTP" : "@E80"),
-      result,
-    );
+    assert.match(response.headers.get("content-type"), /^text\/x-component\b/);
+    const result = await createFromFetch(Promise.resolve(response), {
+      serverConsumerManifest: {
+        moduleMap: {},
+        serverModuleMap: {},
+        moduleLoading: null,
+      },
+    });
+    assert.equal(typeof result.a?.then, "function", "Flight must contain the action result promise");
+    if (expectedStatus === 200) {
+      assert.deepEqual(await result.a, {
+        message: "Server action received: Standalone HTTP",
+        success: true,
+      });
+    } else {
+      await assert.rejects(Promise.resolve(result.a), (error) => {
+        assert.ok(error instanceof Error);
+        assert.equal(typeof error.digest, "string");
+        assert.ok(error.digest.length > 0, "the rejected action must carry an error digest");
+        return true;
+      });
+      const diagnostic = `\`x-forwarded-host\` header with value \`${forwardedHost}\` does not match \`origin\` header with value \`${new URL(origin).host}\` from a forwarded Server Actions request. Aborting the action.`;
+      // Stderr delivery can trail the HTTP response, especially on Windows.
+      for (let attempt = 0; attempt < 100 && !serverErrors.slice(errorOffset).includes(diagnostic); attempt++) {
+        await delay(20);
+      }
+      assert.ok(serverErrors.slice(errorOffset).includes(diagnostic),
+        `the origin guard must explicitly abort before action execution:\n${serverErrors.slice(errorOffset)}`);
+    }
   }
 });
