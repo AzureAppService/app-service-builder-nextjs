@@ -8,7 +8,10 @@ import { setTimeout as delay } from "node:timers/promises";
 import { stripVTControlCharacters } from "node:util";
 import { submitGreeting } from "./src/app/actions.js";
 
-const { createFromFetch, encodeReply } = createRequire(import.meta.url)("next/dist/compiled/react-server-dom-turbopack/client.node.js");
+// The standalone server emits production Flight errors, without development stack data.
+const { createFromFetch, encodeReply } = createRequire(import.meta.url)(
+  "next/dist/compiled/react-server-dom-turbopack/cjs/react-server-dom-turbopack-client.node.production.js",
+);
 
 test("manifest binds the standalone server to all interfaces on component port 3000", async () => {
   const manifest = await readFile(new URL("./builder.yaml", import.meta.url), "utf8");
@@ -207,7 +210,7 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
     } else {
       await assert.rejects(Promise.resolve(result.a), (error) => {
         assert.ok(error instanceof Error);
-        assert.equal(typeof error.digest, "string");
+        assert.equal(typeof error.digest, "string", error.stack);
         assert.ok(error.digest.length > 0, "the rejected action must carry an error digest");
         return true;
       });
