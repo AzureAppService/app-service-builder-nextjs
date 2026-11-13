@@ -49,7 +49,7 @@ export default function Home() {
       </details>
       <nav className="documentation" aria-label="Documentation">
         <a href="https://nextjs.org/docs">Framework documentation</a>
-        <a href="https://builderapps.azure.com/docs/">App Service Builder documentation</a>
+        <a href="https://builder.appservice.azure.com/docs/">App Service Builder documentation</a>
       </nav>
 
       <section aria-labelledby="deployment-heading">

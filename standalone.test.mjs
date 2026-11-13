@@ -115,7 +115,7 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
   assert.ok(html.includes("<summary>Customize this sample</summary>"));
   assert.ok(html.includes("In your fork"));
   assert.ok(html.includes('href="https://nextjs.org/docs">Framework documentation'));
-  assert.ok(html.includes('href="https://builderapps.azure.com/docs/">App Service Builder documentation'));
+  assert.ok(html.includes('href="https://builder.appservice.azure.com/docs/">App Service Builder documentation'));
   assert.ok(html.includes("<title>App Service Builder: Next.js sample</title>"));
   const assets = [...html.matchAll(/(?:src|href)="([^"]*\/_next\/static\/[^"]+\.(?:js|css))"/g)]
     .map((match) => match[1]);
