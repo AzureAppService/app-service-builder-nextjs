@@ -114,7 +114,7 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
   assert.ok(html.includes('role="status"'));
   assert.ok(html.includes("<summary>Customize this sample</summary>"));
   assert.ok(html.includes("In your fork"));
-  assert.ok(html.includes('href="https://nextjs.org/docs">Framework documentation'));
+  assert.ok(html.includes('href="https://nextjs.org/docs">Next.js documentation'));
   assert.ok(html.includes('href="https://builder.appservice.azure.com/docs/">App Service Builder documentation'));
   assert.ok(html.includes("<title>App Service Builder: Next.js sample</title>"));
   const assets = [...html.matchAll(/(?:src|href)="([^"]*\/_next\/static\/[^"]+\.(?:js|css))"/g)]
@@ -167,7 +167,7 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
   assert.equal(proxy.status, 200);
   assert.equal(proxy.headers.get("x-builder-apps-proxy"), "active");
   assert.ok((await proxy.text()).includes("Proxy check reached the App Router"));
-  for (const path of ["/shape.png", "/_next/image?url=%2Fshape.png&w=256&q=75"]) {
+  for (const path of ["/brand/builder.svg", "/brand/next.svg", "/shape.png", "/_next/image?url=%2Fshape.png&w=256&q=75"]) {
     const response = await fetch(new URL(path, origin));
     assert.equal(response.status, 200);
     assert.match(response.headers.get("content-type"), /^image\//);

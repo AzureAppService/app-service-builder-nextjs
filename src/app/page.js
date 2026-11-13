@@ -5,7 +5,16 @@ import HealthCheck from "./health-check";
 
 export default function Home() {
   return (
-    <main>
+    <main className="sample-sheet">
+      <header className="sample-header">
+        <Link className="sample-brand" href="/"><Image src="/brand/builder.svg" alt="" width={32} height={32} />App Service Builder</Link>
+        <nav aria-label="Documentation">
+          <a href="https://nextjs.org/docs">Next.js documentation</a>
+          <a href="https://builder.appservice.azure.com/docs/">App Service Builder documentation</a>
+        </nav>
+      </header>
+      <div className="sample-content">
+      <div className="ecosystem-logo"><Image src="/brand/next.svg" alt="Next.js" width={126} height={38} /></div>
       <p className="eyebrow">App Service Builder / Next.js</p>
       <h1>Next.js App Router is running</h1>
       <p>
@@ -44,13 +53,15 @@ export default function Home() {
       <details>
         <summary>Customize this sample</summary>
         <p>In your fork, edit the home page in <code>src/app/page.js</code> and the
-          styles in <code>src/app/globals.css</code>. Commit your changes and
+          visual-family styles in <code>src/app/family.css</code>. Commit your changes and
           deploy your fork through your Builder App.</p>
       </details>
-      <nav className="documentation" aria-label="Documentation">
-        <a href="https://nextjs.org/docs">Framework documentation</a>
-        <a href="https://builder.appservice.azure.com/docs/">App Service Builder documentation</a>
-      </nav>
+      <details>
+        <summary>Logo sources &amp; notices</summary>
+        <p>The unmodified <a href="https://vercel.com/geist/brands">Next.js wordmark</a>
+          identifies this framework. Next.js is a trademark of Vercel, Inc.
+          App Service Builder uses its supplied official mark. No endorsement implied.</p>
+      </details>
 
       <section aria-labelledby="deployment-heading">
         <h2 id="deployment-heading">Deployment details</h2>
@@ -75,6 +86,7 @@ export default function Home() {
           </div>
         </dl>
       </section>
+      </div>
     </main>
   );
 }

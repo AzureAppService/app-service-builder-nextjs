@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./family.css";
 
 export const metadata = {
   title: {

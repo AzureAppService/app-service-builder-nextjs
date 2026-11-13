@@ -21,8 +21,23 @@ the hosted request-origin boundary.
 
 ![Next.js root page with framework route actions, inline app health feedback, image optimization, and customization help](docs/images/sample.png)
 
-Rendered locally at `/` from the standalone production build with sample
-settings. This screenshot is not evidence of an Azure deployment.
+**LOCAL — Microsoft Edge, 1440px desktop, root `/`, standalone production build.**
+This screenshot is not evidence of an Azure deployment.
+
+The route-focused daylight composition keeps prerendering, request-time SSR,
+dynamic segments, the existing Server Action, proxy checks, and the real
+`/shape.png` raster through the Next.js image optimizer. Edit `src/app/page.js`
+for content and `src/app/family.css` for the visual family; baseline styles
+remain in `src/app/globals.css`. The documented hosted-origin Server Action
+limitation below is unchanged; local rendering does not qualify that workflow.
+
+### Logo provenance
+
+`public/brand/builder.svg` is the supplied official App Service Builder mark.
+`public/brand/next.svg` is an unmodified copy of the existing official Next.js
+wordmark in `public/next.svg`; see [Vercel brand guidance](https://vercel.com/geist/brands).
+Next.js is a trademark of Vercel, Inc. Logos identify the stack; no endorsement
+is implied.
 
 **Check app health** reads this app's compatibility `/health` JSON endpoint and
 displays the result in place, including failures and retry guidance. It does not
