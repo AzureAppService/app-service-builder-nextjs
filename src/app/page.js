@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { appInfo } from "./info";
+import HealthCheck from "./health-check";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
         <Link href="/middleware-check">Test proxy</Link>
         <Link href="/api/version">View version route</Link>
       </nav>
+      <HealthCheck />
 
       <section className="feature-card" aria-labelledby="image-heading">
         <div>
@@ -33,12 +35,22 @@ export default function Home() {
         </div>
         <Image
           src="/shape.png"
-          alt="Abstract purple application shape"
+          alt="Sample raster image"
           width={128}
           height={128}
           priority
         />
       </section>
+      <details>
+        <summary>Customize this sample</summary>
+        <p>In your fork, edit the home page in <code>src/app/page.js</code> and the
+          styles in <code>src/app/globals.css</code>. Commit your changes and
+          deploy your fork through your Builder App.</p>
+      </details>
+      <nav className="documentation" aria-label="Documentation">
+        <a href="https://nextjs.org/docs">Framework documentation</a>
+        <a href="https://builderapps.azure.com/docs/">App Service Builder documentation</a>
+      </nav>
 
       <section aria-labelledby="deployment-heading">
         <h2 id="deployment-heading">Deployment details</h2>

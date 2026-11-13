@@ -17,6 +17,20 @@ Hosted qualification now demonstrates the bounded standalone behavior below,
 not every Next.js mode or location. Browser Server Actions remain blocked by
 the hosted request-origin boundary.
 
+## Sample preview
+
+![Next.js root page with framework route actions, inline app health feedback, image optimization, and customization help](docs/images/sample.png)
+
+Rendered locally at `/` from the standalone production build with sample
+settings. This screenshot is not evidence of an Azure deployment.
+
+**Check app health** reads this app's compatibility `/health` JSON endpoint and
+displays the result in place, including failures and retry guidance. It does not
+report Azure deployment status; Builder's `/api/health` readiness endpoint is
+unchanged. **Customize this sample** explains which files to edit in your fork;
+it does not guess your repository or app URL. Framework and App Service Builder
+documentation are labeled separately.
+
 ## Repository structure
 
 ```text

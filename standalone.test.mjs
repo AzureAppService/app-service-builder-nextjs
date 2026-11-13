@@ -110,6 +110,12 @@ test("standalone server serves framework routes, assets, images, and runtime SSR
   assert.equal(root.status, 200);
   const html = await root.text();
   assert.ok(html.includes("Next.js App Router is running"));
+  assert.ok(html.includes("Check app health"));
+  assert.ok(html.includes('role="status"'));
+  assert.ok(html.includes("<summary>Customize this sample</summary>"));
+  assert.ok(html.includes("In your fork"));
+  assert.ok(html.includes('href="https://nextjs.org/docs">Framework documentation'));
+  assert.ok(html.includes('href="https://builderapps.azure.com/docs/">App Service Builder documentation'));
   assert.ok(html.includes("<title>App Service Builder: Next.js sample</title>"));
   const assets = [...html.matchAll(/(?:src|href)="([^"]*\/_next\/static\/[^"]+\.(?:js|css))"/g)]
     .map((match) => match[1]);
