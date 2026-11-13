@@ -15,13 +15,13 @@
     "verify": "pwsh -NoProfile -File scripts/verify.ps1 -BaseUrl http://127.0.0.1:3000"
   },
   "dependencies": {
-    "next": "16.4.4",
+    "next": "16.4.5",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
   "devDependencies": {
     "eslint": "^10",
-    "eslint-config-next": "16.4.4"
+    "eslint-config-next": "16.4.5"
   },
   "overrides": {
     "@eslint/config-array": {
