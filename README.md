@@ -1,7 +1,7 @@
 # App Service Builder: Next.js sample
 
 A standalone Next.js App Router application for
-[Azure App Service Builder](https://builderapps.azure.com/docs/). It combines
+[Azure App Service Builder](https://builder.appservice.azure.com/docs/). It combines
 prerendered pages, request-time SSR, dynamic segments, route handlers, a React
 Server Action, image optimization, redirects, and a custom not-found page.
 No database, external service, or parent workspace is required.
@@ -16,6 +16,35 @@ routes but returned 404 for `/shape.png` and 400 for its optimized image.
 Hosted qualification now demonstrates the bounded standalone behavior below,
 not every Next.js mode or location. Browser Server Actions remain blocked by
 the hosted request-origin boundary.
+
+## Sample preview
+
+![Next.js root page with framework route actions, inline app health feedback, image optimization, and customization help](docs/images/sample.png)
+
+**LOCAL — Microsoft Edge, 1440px desktop, root `/`, standalone production build.**
+This screenshot is not evidence of an Azure deployment.
+
+The route-focused daylight composition keeps prerendering, request-time SSR,
+dynamic segments, the existing Server Action, proxy checks, and the real
+`/shape.png` raster through the Next.js image optimizer. Edit `src/app/page.js`
+for content and `src/app/family.css` for the visual family; baseline styles
+remain in `src/app/globals.css`. The documented hosted-origin Server Action
+limitation below is unchanged; local rendering does not qualify that workflow.
+
+### Logo provenance
+
+`public/brand/builder.svg` is the supplied official App Service Builder mark.
+`public/brand/next.svg` is an unmodified copy of the existing official Next.js
+wordmark in `public/next.svg`; see [Vercel brand guidance](https://vercel.com/geist/brands).
+Next.js is a trademark of Vercel, Inc. Logos identify the stack; no endorsement
+is implied.
+
+**Check app health** reads this app's compatibility `/health` JSON endpoint and
+displays the result in place, including failures and retry guidance. It does not
+report Azure deployment status; Builder's `/api/health` readiness endpoint is
+unchanged. **Customize this sample** explains which files to edit in your fork;
+it does not guess your repository or app URL. Framework and App Service Builder
+documentation are labeled separately.
 
 ## Repository structure
 
@@ -272,7 +301,7 @@ Deploy the committed source and manifest, not `node_modules/` or `.next/`.
 
 ## Deploy your fork through Builder Portal
 
-Follow the [Portal quickstart](https://builderapps.azure.com/docs/quickstarts/portal/)
+Follow the [Portal quickstart](https://builder.appservice.azure.com/docs/quickstarts/portal/)
 for your authorized Private Preview environment:
 
 1. Commit and push the sample to your GitHub repository's `main` branch.
@@ -298,7 +327,7 @@ or private information in them.** `NEXT_PUBLIC_*` values are captured during
 the build; changing runtime settings alone does not update prerendered output.
 Configure build/runtime values appropriately through Portal **Variables**,
 then deploy and verify them. See the
-[variables guide](https://builderapps.azure.com/docs/guides/variables/).
+[variables guide](https://builder.appservice.azure.com/docs/guides/variables/).
 
 For code changes, run the checks, commit, and push to your fork's `main` branch.
 Explicitly deploy through Builder Portal and verify the running application.
@@ -312,9 +341,9 @@ Deleting the app does not delete your GitHub repository or local clone.
 
 ## Resources and contributions
 
-- [App Service Builder documentation](https://builderapps.azure.com/docs/)
-- [Sample catalog](https://builderapps.azure.com/docs/samples/)
-- [Manifest guide](https://builderapps.azure.com/docs/guides/builder-yaml/)
+- [App Service Builder documentation](https://builder.appservice.azure.com/docs/)
+- [Sample catalog](https://builder.appservice.azure.com/docs/samples/)
+- [Manifest guide](https://builder.appservice.azure.com/docs/guides/builder-yaml/)
 - [Next.js standalone output](https://nextjs.org/docs/app/api-reference/config/next-config-js/output)
 - [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](.github/CODE_OF_CONDUCT.md)

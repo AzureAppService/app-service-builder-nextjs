@@ -21,8 +21,8 @@ body {
 
 main {
   width: min(46rem, calc(100% - 3rem));
-  margin: 4rem auto;
-  padding: 2rem;
+  margin: 3rem auto;
+  padding: 2.5rem;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 1rem;
@@ -30,7 +30,11 @@ main {
 }
 
 h1 {
-  margin-top: 0;
+  margin: 0 0 1rem;
+  font-size: clamp(1.9rem, 4vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 
 h2 {
@@ -117,6 +121,19 @@ dd {
   margin: 0;
   overflow-wrap: anywhere;
 }
+
+p { line-height: 1.65; }
+a { text-underline-offset: 0.2em; }
+button { min-height: 44px; }
+button.secondary { color: var(--accent); background: #fff; border: 1px solid #b5bfda; }
+button.secondary:hover { background: #eef1fa; }
+button:disabled { color: #526079; background: #eef1fa; cursor: wait; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.health-result { color: #42536d; font-size: 0.9rem; margin-bottom: 1.75rem; }
+details { margin-top: 2rem; padding: 1rem 0; border-block: 1px solid var(--border); }
+summary { min-height: 44px; display: list-item; align-content: center; font-weight: 700; cursor: pointer; }
+code { overflow-wrap: anywhere; font-size: 0.9em; }
+.documentation { font-size: 0.9rem; margin-bottom: 0; }
 
 form {
   display: grid;
