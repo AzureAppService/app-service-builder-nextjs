@@ -68,7 +68,7 @@ standalone.test.mjs              Manifest, action, and standalone integration te
 - Optional: [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
   for the endpoint verification script.
 
-The sample pins Next.js **16.4.4**, React **19.3.1**, and React DOM **19.3.1**.
+The sample pins Next.js **16.4.6**, React **19.3.1**, and React DOM **19.3.1**.
 Keep the lockfile and use `npm ci`; setup does not require dependency upgrades.
 The hosted observations below apply to Next.js 16.3.7, not these updated pins.
 
